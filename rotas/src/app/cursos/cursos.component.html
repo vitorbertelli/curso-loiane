@@ -1,0 +1,12 @@
+<p>
+  Lista de cursos
+</p>
+<div>
+  <ul>
+    <li *ngFor="let curso of cursos">
+      <a [routerLink]="['/curso', curso.id]">
+        {{ curso.nome }}
+      </a>
+    </li>
+  </ul> 
+</div>

@@ -1,0 +1,29 @@
+<h5>Exemplos de Pipes</h5>
+
+<p>Título: {{ livro.titulo | uppercase | lowercase | camelCase }}</p>
+<p>Estrelas: {{ livro.rating | number:'1.1-1' }}</p>
+<p>Páginas: {{ livro.numeroPaginas | number }}</p>
+<p>Preço: {{ livro.preco | currency:'BRL':true }}</p>
+<p>Data Lançamento: {{ livro.dataLancamento | date:'dd-MMM-yyyy' }}</p>
+<p>Url: {{ livro.url }}</p>
+<br>
+<p>Livro: {{ livro | json }}</p>
+
+<br>
+
+<input type="text" [(ngModel)]="filtro">
+
+<br>
+
+<input type="text" #novoValor>
+<button (click)="addLivro(novoValor.value)">Add Livro</button>
+
+<ul>
+  <li *ngFor="let livro of getLivros()">
+    {{ livro }}
+  </li>
+</ul>
+
+<p>
+  {{ valorAsync | async }}
+</p>
