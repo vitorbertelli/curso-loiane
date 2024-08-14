@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DataFormComponent } from './data-form.component';
+import { ErrorMsgComponent } from './error-msg.component';
 
-describe('DataFormComponent', () => {
-  let component: DataFormComponent;
-  let fixture: ComponentFixture<DataFormComponent>;
+describe('ErrorMsgComponent', () => {
+  let component: ErrorMsgComponent;
+  let fixture: ComponentFixture<ErrorMsgComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DataFormComponent]
+      imports: [ErrorMsgComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(DataFormComponent);
+    fixture = TestBed.createComponent(ErrorMsgComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

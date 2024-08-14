@@ -1,13 +1,19 @@
 <form [formGroup]="formulario">
   <div class="row g-3">
 
-    <div class="col-12">
+
+    <input-field formControlName="nome"
+      [classeCss]="aplicaCssErro('nome')" id="nome" 
+      label="Nome" [control]="$any(formulario.get('nome'))"
+    ></input-field>
+
+    <!-- <div class="col-12">
       <label for="nome" class="form-label">Nome</label>
       <input type="text" class="form-control" [ngClass]="aplicaCssErro('nome')"
       id="nome" formControlName="nome" placeholder="Fulano de Tal">
-      <app-campo-control-erro [mostrarErro]="verificaValidTouched('nome')" msgErro="Nome é obrigatório.">
-      </app-campo-control-erro>
-    </div>
+      <error-msg [control]="$any(formulario.get('nome'))" label="Nome">
+      </error-msg>
+    </div> -->
 
     <div class="col-12">
       <label for="email" class="form-label">Email</label>
@@ -15,8 +21,19 @@
       id="email" formControlName="email" placeholder="nome@email.com">
       <app-campo-control-erro [mostrarErro]="verificaValidTouched('email')" msgErro="Email é obrigatório.">
       </app-campo-control-erro>
+      <app-campo-control-erro [mostrarErro]="!!formulario.get('email')?.hasError('email')" msgErro="Email é inválido.">
+      </app-campo-control-erro>
+      <app-campo-control-erro [mostrarErro]="!!formulario.get('email')?.hasError('emailExiste')" msgErro="Email já foi cadastrado.">
+      </app-campo-control-erro>
     </div>
-
+    
+    <div class="col-12">
+      <label for="confirmarEmail" class="form-label">Confirmar Email</label>
+      <input type="confirmarEmail" class="form-control" [ngClass]="aplicaCssErro('confirmarEmail')"
+      id="confirmarEmail" formControlName="confirmarEmail" placeholder="nome@email.com">
+      <app-campo-control-erro [mostrarErro]="verificaValidTouched('confirmarEmail')" msgErro="É necessário confirmar o email.">
+      </app-campo-control-erro>
+    </div>
 
     <div class="col-12" formGroupName="endereco">
       <div class="row">
@@ -24,9 +41,9 @@
         <div class="col-md-3 mb-3">
           <label for="cep" class="form-label">CEP</label>
           <input type="text" class="form-control" [ngClass]="aplicaCssErro('endereco.cep')"
-          id="cep" formControlName="cep" placeholder="" (blur)="consultarCep()">
-          <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cep')" msgErro="CEP é obrigatório.">
-          </app-campo-control-erro>
+          id="cep" formControlName="cep">
+          <error-msg [control]="$any(formulario.get('endereco.cep'))" label="CEP">
+          </error-msg>
         </div>
 
         <div class="col-md-3">
@@ -70,7 +87,6 @@
         <div class="col-md-4">
           <label for="estado" class="form-label">Estado</label>
           <select class="form-control" id="estado" formControlName="estado" [ngClass]="aplicaCssErro('endereco.estado')">
-            <!-- <option value="">Selecione um estado...</option> -->
             <option *ngFor="let estado of estados | async" [value]="estado.sigla">{{ estado.nome }}</option>
           </select>
           <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.estado')" msgErro="Estado é obrigatório.">
@@ -80,10 +96,66 @@
       </div>
     </div>
 
+    <div class="col-md-4">
+      <label for="cargo" class="form-label">Cargo</label>
+      <select class="form-control" id="cargo" formControlName="cargo" [ngClass]="aplicaCssErro('cargo')" [compareWith]="onCompare">
+        <option *ngFor="let cargo of cargos" [ngValue]="cargo">{{ cargo.descricao }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label for="tecnologias" class="form-label">Tecnologias</label>
+      <select multiple class="form-control" id="tecnologias" formControlName="tecnologias" [ngClass]="aplicaCssErro('tecnologias')">
+        <option *ngFor="let tecnologia of tecnologias" [value]="tecnologia.nome">{{ tecnologia.descricao }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <label for="newsletter" class="form-label">Newsletter</label>
+      <div id="newsletter">
+        @for (option of newsletter; track $index) {
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio"
+              name="newsletter" id="newsletter"
+              formControlName="newsletter" [value]="option.nome"
+              [ngClass]="aplicaCssErro('newsletter')"
+            >
+            <label class="form-check-label" for="newsletter">{{ option.descricao }}</label>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <label for="termos" class="form-label">Termos</label>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="termos" formControlName="termos">
+        <label class="form-check-label" for="flexCheckDefault">
+          Aceito os termos.
+        </label>
+      </div>
+      <app-campo-control-erro [mostrarErro]="verificaValidTouched('termos')" msgErro="Por favor, aceite os termos.">
+      </app-campo-control-erro>
+    </div>
+
+    <div class="col-md-4">
+      <label for="frameworks" class="form-label">Frameworks</label>
+      <div id="frameworks">
+        <div class="form-check form-check-inline" formArrayName="frameworks"
+          *ngFor="let framework of frameworksArrayControls(); let i = index">
+          <input class="form-check-input" type="checkbox" id="frameworks" [formControlName]="i">
+          <label class="form-check-label" for="frameworks">{{ frameworks[i] }}</label>
+        </div>
+      </div>
+      <app-campo-control-erro [mostrarErro]="verificaValidTouched('frameworks')" msgErro="Por favor, selecione pelo menos 1 framework.">
+      </app-campo-control-erro>
+    </div>
 
     <div class="col-12">
-      <button (click)="onSubmit()" type="submit" class="btn btn-primary">Submit</button>
-      <button (click)="resetar()" type="reset" class="btn btn-secondary ms-1">Cancelar</button>
+      <button (click)="onSubmit()" type="submit" class="btn btn-success">Submit</button>
+      <button (click)="resetar()" type="reset" class="btn btn-danger ms-1">Cancelar</button>
+      <button (click)="setCargo()" class="btn btn-secondary ms-1">SetCargo</button>
+      <button (click)="setTecnologias()" class="btn btn-secondary ms-1">SetTecnologias</button>
     </div>
 
   </div>
